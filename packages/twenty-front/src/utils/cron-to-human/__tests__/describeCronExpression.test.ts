@@ -121,6 +121,50 @@ describe('describeCronExpression', () => {
     });
   });
 
+  describe('minute patterns with fixed or listed hours', () => {
+    it('should describe step minutes with a single hour', () => {
+      expect(describeCronExpression('*/5 9 * * *')).toBe(
+        'every 5 minutes between 09:00 and 09:59 UTC',
+      );
+    });
+
+    it('should describe wildcard minutes with a single hour', () => {
+      expect(describeCronExpression('* 9 * * *')).toBe(
+        'every minute between 09:00 and 09:59 UTC',
+      );
+    });
+
+    it('should describe step minutes with listed hours', () => {
+      expect(describeCronExpression('*/10 9,17 * * *')).toBe(
+        'every 10 minutes during 09:00 and 17:00 UTC',
+      );
+    });
+
+    it('should describe wildcard minutes with listed hours on weekdays', () => {
+      expect(describeCronExpression('* 9,17 * * 1-5')).toBe(
+        'every minute during 09:00 and 17:00 UTC on weekdays',
+      );
+    });
+
+    it('should describe a minute range with a single hour', () => {
+      expect(describeCronExpression('0-30 9 * * *')).toBe(
+        'every minute from 09:00 to 09:30 UTC',
+      );
+    });
+
+    it('should describe listed minutes with a single hour', () => {
+      expect(describeCronExpression('5,10 9 * * *')).toBe(
+        'at minutes 5 and 10 between 09:00 and 09:59 UTC',
+      );
+    });
+
+    it('should describe wildcard minutes with an hour range', () => {
+      expect(describeCronExpression('* 9-17 * * *')).toBe(
+        'every minute between 09:00 UTC and 17:00 UTC',
+      );
+    });
+  });
+
   describe('real-world complex expressions', () => {
     it('should describe business hours every 15 minutes on weekdays', () => {
       expect(describeCronExpression('*/15 9-17 * * 1-5')).toBe(
